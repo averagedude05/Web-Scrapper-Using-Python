@@ -2,3 +2,4 @@
 __pycache__/
 *.html
 to_delete.txt
+.todo
