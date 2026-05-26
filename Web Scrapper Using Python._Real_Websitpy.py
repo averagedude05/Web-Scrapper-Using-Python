@@ -12,11 +12,18 @@ token: typing.Final=os.getenv("TELEGRAM_TOKEN") #show a warning by text editor o
 chat_id: typing.Final=os.getenv("MY_CHAT_ID")
 username: typing.Final=os.getenv("USERNAME")
 
+
 #Webscrapper setup
-html_text=requests.get('https://www.aiub.edu/category/notices?pageNo=4&pageSize=20').text
+html_text=requests.get('https://www.aiub.edu/category/notices').text
 soup=BeautifulSoup(html_text, 'lxml')
 seen_notices=set()
 
+
+#sending message to the telegram bot
+message="Hello how are you from vs code"
+url=f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
+r=requests.get(url)
+print(r)
 
 
 #General Syntax of a genearator statement
