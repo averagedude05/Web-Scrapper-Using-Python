@@ -4,7 +4,10 @@ from bs4 import BeautifulSoup
 import requests
 import typing
 from dotenv import load_dotenv
+from keep_alive import keep_alive
 
+#setup to keep this running on render
+keep_alive()
 
 #telegram Setup
 load_dotenv()
