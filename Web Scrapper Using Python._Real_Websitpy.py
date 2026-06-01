@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from keep_alive import keep_alive
 
 #setup to keep this running on render
-keep_alive()
+
+#run flask ap on a seperate thread
 
 #telegram Setup
 load_dotenv()
@@ -44,7 +45,9 @@ def find_exam(notices):
                 r=requests.get(url)   
     
 if __name__=="__main__":
-   
+    #setup to keep this running on render
+    keep_alive()
+    #run flask ap on a seperate thread
     while True:
         try:
             html_text=requests.get('https://www.aiub.edu/category/notices').text
