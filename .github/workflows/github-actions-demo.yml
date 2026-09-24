@@ -15,6 +15,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        MY_CHAT_ID: ${{ secrets.MY_CHAT_ID }}
+        USERNAME: ${{ secrets.USERNAME }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.10
