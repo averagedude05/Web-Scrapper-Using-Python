@@ -22,7 +22,7 @@ app = Flask('')
 #to make flask act like a website
 @app.route('/')
 def home():
-    return "Bot is running"
+    return "<h1> Bot is running </h1>"
 # If someone visits your website URL
 # / (homepage)
 # show this message:"Bot is running"
