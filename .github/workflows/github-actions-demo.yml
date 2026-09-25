@@ -5,8 +5,8 @@ name: Python application
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
-  pull_request:
+    - cron: "*/5 * * * *"
+  push: 
     branches: [ "main" ]
 
 permissions:
