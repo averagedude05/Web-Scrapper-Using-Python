@@ -27,7 +27,7 @@ username: typing.Final=os.getenv("USERNAME")
 # print(r)
 
 
-allowed_texts=['freshmen','orientation']
+allowed_texts=['freshman','orientation']
 def check_keyword(title_text) :
     return all(item in title_text for item in allowed_texts)
 
@@ -46,8 +46,8 @@ def check_notice_exists(notices):
 def find_exam(notices):
     for n in notices:
         title_text = n.text.lower().strip()
-        if not check_notice_exists(title_text):  
             if check_keyword(title_text.lower().split()):
+                if not check_notice_exists(title_text):  
                   url=f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={title_text}"
                   requests.get(url)
 
