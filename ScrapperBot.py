@@ -58,7 +58,7 @@ def find_exam(notices):
     
 if __name__=="__main__":
     try:
-        html_text=requests.get(f"https://www.aiub.edu/category/notices?pageNo=1&pageSize=20").text()
+        html_text=requests.get(f"https://www.aiub.edu/category/notices?pageNo=1&pageSize=20").text
         #uses a library called requests to visit the AIUB notices page.
         # It downloads the entire raw HTML source code of that webpage 
         # and saves it into a variable called html_text.
