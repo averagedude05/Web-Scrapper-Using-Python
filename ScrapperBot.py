@@ -16,9 +16,6 @@ chat_id: typing.Final=os.getenv("MY_CHAT_ID")
 username: typing.Final=os.getenv("USERNAME")
 
 
-with open("seen_notices.txt", "w"):
-    pass
-
 
 
 #sending message to the telegram bot
