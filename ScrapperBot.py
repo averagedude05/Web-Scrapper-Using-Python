@@ -48,8 +48,8 @@ def find_exam(notices):
         title_text = n.text.lower().strip()
             if check_keyword(title_text.lower().split()):
                 if not check_notice_exists(title_text):  
-                  url=f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={title_text}"
-                  requests.get(url)
+                      url=f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={title_text}"
+                      requests.get(url)
 
 
     
