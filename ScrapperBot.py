@@ -30,7 +30,7 @@ with open("seen_notices.txt", "w"):
 # print(r)
 
 
-allowed_texts=['exam','schedule','undergraduate']
+allowed_texts=['freshmen','orientation']
 def check_keyword(title_text) :
     return all(item in title_text for item in allowed_texts)
 
