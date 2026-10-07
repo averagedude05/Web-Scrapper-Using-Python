@@ -1,149 +1,256 @@
-# Campus Lost & Found Management System
+# AIUB Notice Scraper & Telegram Alert Bot
 
-A web-based **Campus Lost & Found Management System** developed as an academic project for **CSC 3215: Web Technologies** at American International University-Bangladesh (AIUB).
+An automated Python-based web scraper that monitors the **AIUB notice board**, checks the latest notices for predefined keywords, and sends matching notice titles to a Telegram bot.
 
-The system provides a centralized platform for students to report lost or found items, search for possible matches, submit claims, and manage item information. Administrators can review reports, manage users, verify claims, and update item statuses.
+The project uses **GitHub Actions** to run the scraper automatically every 5 minutes and maintains a persistent record of previously detected notices to prevent duplicate notifications. It is also configured to run as a web application on **Render**.
 
-## 📌 Project Overview
+## Features
 
-Students often rely on social media groups, messaging platforms, or informal communication to report lost belongings. These approaches can make it difficult to search for items, track reports, and verify ownership.
+* Scrapes the first page of the AIUB notice board.
+* Checks notice titles against predefined keywords.
+* Sends matching new notices to a Telegram bot.
+* Prevents duplicate notifications using a persistent `seen_notices.txt` file.
+* Runs automatically every 5 minutes using GitHub Actions.
+* Automatically commits and pushes updated notice history to GitHub.
+* Uses environment variables for sensitive Telegram credentials.
+* Can be hosted as a web application on Render.
 
-This project aims to provide a structured platform where:
+## How It Works
 
-* Users can report lost and found items.
-* Found items can be searched and managed.
-* Users can submit and track claims.
-* Administrators can review reports and claims.
-* Item statuses can be tracked throughout the recovery process.
+The application follows this process:
 
-## ✨ Features
+```text
+AIUB Notice Board
+        │
+        ▼
+   Python Scraper
+        │
+        ▼
+Extract Notice Titles
+        │
+        ▼
+Check Keywords
+        │
+        ▼
+Check seen_notices.txt
+        │
+        ├── Already seen → Ignore
+        │
+        └── New match
+                │
+                ▼
+        Send Telegram Alert
+                │
+                ▼
+       Add to seen_notices.txt
+                │
+                ▼
+       GitHub Actions commits
+       and pushes the updated file
+```
 
-### 🔐 Authentication & Account Management
+### Keyword Matching
 
-* User registration and login
-* Secure logout
-* Password management
-* Profile management
-* Role-based access control
+The scraper currently monitors for the following keywords:
 
-### 🔎 Lost Item User
+```python
+allowed_texts = ['freshman', 'orientation']
+```
 
-* Report lost items with relevant details
-* Search and browse found items
-* Submit claims for matching items
-* Track claim status
+A notice is considered a match when all configured keywords are present in its title.
 
-### 📦 Found Item User
+## Technologies Used
 
-* Report found items
-* Add item name, category, date, location, description, and image
-* View submitted found items
-* Edit or withdraw submissions
-* Update found-item information
+* **Python**
+* **Requests** – HTTP requests and Telegram API communication
+* **BeautifulSoup** – HTML parsing and notice extraction
+* **python-dotenv** – Environment variable management
+* **Telegram Bot API** – Notification delivery
+* **GitHub Actions** – Automated execution every 5 minutes
+* **Git/GitHub** – Persistent storage of processed notices
+* **Render** – Web application hosting
 
-### 👨‍💼 Admin
+## Project Structure
 
-* Review and manage item reports
-* Manage claim requests
-* Approve or reject claims
-* Manage user accounts
-* Manage item categories
-* Update item statuses
+```text
+Web-Scrapper-Using-Python/
+│
+├── .github/
+│   └── workflows/
+│       └── ...
+│
+├── .gitignore
+├── README.md
+├── ScrapperBot.py
+├── keep_alive.py
+├── requirements.txt
+└── seen_notices.txt
+```
 
-## 🛠️ Technologies Used
+### Important Files
 
-| Technology   | Purpose                           |
-| ------------ | --------------------------------- |
-| PHP          | Backend development               |
-| MySQL        | Database management               |
-| JavaScript   | Client-side functionality         |
-| HTML5        | Page structure                    |
-| CSS3         | Styling                           |
-| Bootstrap    | Responsive UI                     |
-| XAMPP        | Local development environment     |
-| Git & GitHub | Version control and collaboration |
+**`ScrapperBot.py`**
 
-## 🗄️ Database
+Contains the main scraping, keyword matching, duplicate detection, and Telegram notification logic.
 
-The system uses a relational **MySQL database** to manage:
+**`seen_notices.txt`**
 
-* Users
-* Lost items
-* Found items
-* Claims
-* Item categories
-* Item statuses
-* Related system data and relationships
+Stores the titles of previously processed matching notices. This prevents the same notice from generating repeated Telegram notifications.
 
-The database was designed with relational tables and appropriate relationships to maintain data consistency and support the application's workflows.
+**`keep_alive.py`**
 
-## 👥 Team & Contribution
+Contains the components used to keep the application running when deployed as a web application.
 
-This project was developed collaboratively as part of **CSC 3215: Web Technologies**.
+**`requirements.txt`**
 
-### My Contributions
+Contains the Python dependencies required by the project.
 
-* Developed the **Found Item User** module.
-* Implemented functionality for reporting and managing found-item submissions.
-* Worked on editing and updating found-item information.
-* Designed and implemented parts of the **MySQL database**.
-* Worked on database relationships and integration with application workflows.
-* Helped coordinate team responsibilities and task assignments during development.
+**`.github/workflows/`**
 
-## 🚀 Getting Started
+Contains the GitHub Actions workflow responsible for automatically running the scraper.
 
-### Prerequisites
+## GitHub Actions Automation
 
-Make sure you have the following installed:
+The scraper is scheduled to run every 5 minutes using GitHub Actions:
 
-* XAMPP
-* PHP
-* MySQL
-* Git
-* A web browser
+```yaml
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+```
 
-### Installation
+During each execution, GitHub Actions:
 
-1. Clone the repository:
+1. Checks out the repository.
+2. Sets up Python 3.10.
+3. Installs the required dependencies.
+4. Runs `ScrapperBot.py`.
+5. Checks whether `seen_notices.txt` was modified.
+6. Commits the updated file if a new notice was detected.
+7. Pushes the change back to the repository.
+
+This allows the repository itself to act as persistent storage for the scraper's processed-notice history.
+
+## Environment Variables
+
+The project uses environment variables for sensitive credentials.
+
+Required variables:
+
+```text
+TELEGRAM_TOKEN
+MY_CHAT_ID
+USERNAME
+```
+
+These values should **not** be hard-coded or committed to the repository.
+
+For GitHub Actions, the values are stored using **GitHub Secrets**.
+
+For local development or Render, configure the corresponding environment variables through the platform's environment-variable settings.
+
+## Telegram Notifications
+
+When a new notice matches the configured keywords, the scraper sends the notice title through the Telegram Bot API.
+
+For example:
+
+```text
+New matching AIUB notice title
+```
+
+Only notices that have not previously been recorded in `seen_notices.txt` trigger a notification.
+
+## Running Locally
+
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/averagedude05/campus-lost-found-management-system.git
+git clone https://github.com/averagedude05/Web-Scrapper-Using-Python.git
+cd Web-Scrapper-Using-Python
 ```
 
-2. Move the project folder into the XAMPP `htdocs` directory:
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file:
+
+```env
+TELEGRAM_TOKEN=your_telegram_bot_token
+MY_CHAT_ID=your_telegram_chat_id
+USERNAME=your_username
+```
+
+Do not commit the `.env` file to GitHub.
+
+### 4. Run the scraper
+
+```bash
+python ScrapperBot.py
+```
+
+The scraper will check the AIUB notice board and send a Telegram notification when it finds a new matching notice.
+
+## Deployment
+
+### GitHub Actions
+
+GitHub Actions is used for the periodic scraping workflow.
+
+The workflow automatically executes every 5 minutes and updates `seen_notices.txt` when a new matching notice is found.
+
+### Render
+
+The project is also configured to run as a web application on Render using the project's keep-alive/web-server component.
+
+Render environment variables should be configured for:
 
 ```text
-C:\xampp\htdocs\
+TELEGRAM_TOKEN
+MY_CHAT_ID
+USERNAME
 ```
 
-3. Start **Apache** and **MySQL** from the XAMPP Control Panel.
+## Duplicate Detection
 
-4. Open **phpMyAdmin** and create the required database.
+Duplicate notifications are avoided through `seen_notices.txt`.
 
-5. Import the project's SQL/database file into MySQL.
-
-6. Configure the database connection in the project if required.
-
-7. Open the application in your browser:
+When a matching notice is found:
 
 ```text
-http://localhost/<project-folder-name>/
+1. Read the notice title.
+2. Check whether the title already exists in seen_notices.txt.
+3. If it exists, ignore the notice.
+4. If it does not exist, send the Telegram notification.
+5. Add the title to seen_notices.txt.
+6. GitHub Actions commits and pushes the updated file.
 ```
 
-## 📂 Project Structure
+This allows future scheduled executions to recognize previously processed notices.
 
-```text
-Campus-Lost-Found/
-│
-├── admin/
-├── found-item-user/
-├── lost-item-user/
-├── assets/
-├── css/
-├── js/
-├── images/
-├── database/
-└── README.md
-```
+## Future Improvements
 
+Possible improvements include:
 
+* Monitoring multiple pages of the notice board.
+* Supporting more flexible keyword matching.
+* Storing notice URLs along with titles.
+* Adding timestamps to detected notices.
+* Using a database instead of a text file for persistent state.
+* Adding a web dashboard for monitored notices.
+* Adding multiple Telegram recipients or channels.
+* Improving error handling and retry mechanisms.
+
+## Author
+
+**Adib Afsar Khan**
+
+Computer Science & Engineering
+American International University-Bangladesh (AIUB)
+
+GitHub: [averagedude05](https://github.com/averagedude05)
