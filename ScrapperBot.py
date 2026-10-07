@@ -18,7 +18,7 @@ username: typing.Final = os.getenv("USERNAME")
 
 
 # Allowed keywords
-allowed_texts = ['freshman', 'orientation']
+allowed_texts = ['exam','schedule']
 
 def check_keyword(title_text):
     return all(item in title_text for item in allowed_texts)
