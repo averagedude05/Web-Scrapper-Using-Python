@@ -54,7 +54,7 @@ Check seen_notices.txt
 The scraper currently monitors for the following keywords:
 
 ```python
-allowed_texts = ['freshman', 'orientation']
+allowed_texts = ['exam','schedule']
 ```
 
 A notice is considered a match when all configured keywords are present in its title.
@@ -245,12 +245,4 @@ Possible improvements include:
 * Adding a web dashboard for monitored notices.
 * Adding multiple Telegram recipients or channels.
 * Improving error handling and retry mechanisms.
-
-## Author
-
-**Adib Afsar Khan**
-
-Computer Science & Engineering
-American International University-Bangladesh (AIUB)
-
-GitHub: [averagedude05](https://github.com/averagedude05)
+* Develop a REST API to expose scraped notice data in JSON format for programmatic access.
